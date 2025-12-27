@@ -1,170 +1,43 @@
-# Terraform In One Shot
-This repository is your one stop solution for Terraform for DevOps Engineers 
+# Production-Ready AWS Infrastructure using Terraform & Ansible
 
-# Terraform Commands - Complete Guide
+## Project Overview
+This project demonstrates the design and deployment of a production-ready cloud infrastructure on AWS using Infrastructure as Code (IaC). Terraform is used to provision scalable and highly available AWS resources, while Ansible automates server configuration and application setup. The project eliminates manual infrastructure management and follows real-world DevOps best practices.
 
-## **1. Setup & Initialization**
-### **Install Terraform**
-```sh
-# Linux & macOS
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-sudo apt-get update && sudo apt-get install terraform
+## Architecture Overview
+- DevOps Control Server (Terraform & Ansible)
+- AWS VPC with public subnets
+- Web Tier EC2 instances
+- Application Tier EC2 instances
+- Security Groups and networking components
+- Remote backend for Terraform state management
 
-# Verify Installation
-terraform -v
-```
+## Tools & Technologies Used
+- AWS (EC2, VPC, Security Groups, S3, DynamoDB)
+- Terraform (Infrastructure as Code)
+- Ansible (Configuration Management)
+- Git & GitHub
+- Linux (Ubuntu)
 
-### **Initialize Terraform**
-```sh
-terraform init
-```
-- Downloads provider plugins
-- Sets up the working directory
+## Deployment Steps
+1. Create a DevOps control server on AWS.
+2. Install Terraform, Ansible, AWS CLI, and Git.
+3. Configure Terraform remote backend using S3 and DynamoDB.
+4. Provision AWS infrastructure using Terraform.
+5. Generate Ansible inventory from Terraform outputs.
+6. Configure servers and deploy applications using Ansible.
+7. Verify application availability and infrastructure health.
 
-## **2. Terraform Core Commands**
-### **Format & Validate Code**
-```sh
-terraform fmt       # Formats Terraform code
-terraform validate  # Validates Terraform syntax
-```
+## Challenges Faced
+- Managing Terraform remote state securely.
+- Automating multi-tier configuration using Ansible.
+- Ensuring idempotent and repeatable deployments.
+- Handling SSH access and security group rules.
 
-### **Plan & Apply Infrastructure**
-```sh
-terraform plan      # Shows execution plan without applying
-terraform apply     # Creates/updates infrastructure
-terraform apply -auto-approve  # Applies without manual confirmation
-```
+## Outcome
+- Fully automated infrastructure provisioning.
+- Scalable and production-ready AWS environment.
+- Reduced manual errors using IaC and automation.
+- Real-world DevOps workflow simulation.
 
-### **Destroy Infrastructure**
-```sh
-terraform destroy  # Destroys all managed resources
-terraform destroy -auto-approve  # Without confirmation
-```
-
-## **3. Managing Terraform State**
-### **Check Current State**
-```sh
-terraform state list  # Lists all managed resources
-terraform show        # Shows detailed resource info
-```
-
-### **Manually Modify State**
-```sh
-terraform state mv <source> <destination>  # Move resource in state file
-terraform state rm <resource>  # Removes resource from state (not from infra)
-```
-
-### **Remote Backend (S3 & DynamoDB)**
-```hcl
-terraform {
-  backend "s3" {
-    bucket         = "my-terraform-state"
-    key            = "global/s3/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "terraform-lock"
-    encrypt        = true
-  }
-}
-```
-```sh
-terraform init  # Reinitialize with remote backend
-```
-
-## **4. Variables & Outputs**
-### **Define & Use Variables**
-```hcl
-variable "instance_type" {
-  default = "t2.micro"
-}
-resource "aws_instance" "web" {
-  instance_type = var.instance_type
-}
-```
-
-### **Pass Variables in CLI**
-```sh
-terraform apply -var="instance_type=t3.small"
-```
-
-### **Output Values**
-```hcl
-output "instance_ip" {
-  value = aws_instance.web.public_ip
-}
-```
-```sh
-terraform output instance_ip
-```
-
-## **5. Loops & Conditionals**
-### **for_each Example**
-```hcl
-resource "aws_s3_bucket" "example" {
-  for_each = toset(["bucket1", "bucket2", "bucket3"])
-  bucket   = each.key
-}
-```
-
-### **Conditional Expressions**
-```hcl
-variable "env" {}
-resource "aws_instance" "example" {
-  instance_type = var.env == "prod" ? "t3.large" : "t2.micro"
-}
-```
-
-## **6. Terraform Modules**
-### **Create & Use a Module**
-```sh
-mkdir -p modules/vpc
-```
-```hcl
-# modules/vpc/main.tf
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-}
-```
-```hcl
-# Root module
-module "vpc" {
-  source = "./modules/vpc"
-}
-```
-```sh
-terraform init
-terraform apply
-```
-
-## **7. Workspaces (Environment Management)**
-### **Create & Switch Workspaces**
-```sh
-terraform workspace new dev
-terraform workspace new prod
-terraform workspace select prod
-terraform workspace list
-```
-
-## **8. Terraform Debugging & Logs**
-```sh
-export TF_LOG=DEBUG  # Enable debug logs
-terraform apply 2>&1 | tee debug.log  # Save logs
-```
-
----
-
-## Projects
-
-### Terraform with Ansible
-[Get it here](https://github.com/LondheShubham153/terraform-ansible-multi-env)
-
-### Terraform with GitHub
-[Get it here](https://github.com/Amitabh-DevOps/online_shop/tree/github-action/.github/workflows)
-
-### Terraform to EKS
-[Get it here](https://github.com/DevMadhup/Springboot-BankApp/tree/DevOps/Terraform/EKS-Deployment)
-
-## **Final Thoughts**
-This README covers all the Terraform commands needed for your **"Terraform in One Shot"** video. Let me know if you need modifications or extra details! 🚀
-
-
+## Author
+Ajay Kumar Gujarathi
